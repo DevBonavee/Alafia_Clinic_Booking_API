@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alafia Clinic Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --background:42 36% 95%;--foreground:172 33% 9%;--card:0 0% 100%;
+  --primary:173 67% 18%;--primary-deep:173 68% 12%;--primary-foreground:42 36% 95%;
+  --secondary:144 23% 91%;--secondary-foreground:173 67% 18%;
+  --muted:42 29% 91%;--muted-foreground:162 6% 43%;
+  --accent:35 85% 65%;--accent-foreground:35 84% 12%;
+  --destructive:8 62% 47%;--destructive-soft:13 76% 94%;
+  --success:152 61% 30%;--success-soft:146 40% 92%;
+  --warning:32 93% 33%;--warning-soft:42 90% 92%;
+  --info:209 52% 36%;--info-soft:213 45% 94%;
+  --border:41 25% 85%;--input:41 22% 81%;--radius:12px;
+  --shadow-sm:0 1px 2px rgb(16 32 30/.06),0 4px 12px -2px rgb(16 32 30/.05);
+  --shadow-lg:0 24px 48px -12px rgb(10 26 24/.14),0 4px 10px rgb(10 26 24/.06);
+  --canvas:#E7E2D7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--canvas);color:hsl(var(--foreground));font-family:Geist,system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.serif{font-family:Fraunces,Georgia,serif;font-optical-sizing:auto}
+.mono{font-family:"Geist Mono",ui-monospace,monospace}
+.over{font-family:"Geist Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:hsl(var(--muted-foreground))}
+.muted{color:hsl(var(--muted-foreground))}
+.small{font-size:13px;line-height:20px}
+/* canvas */
+.canvas{padding:56px 40px 96px;max-width:1600px;margin:0 auto}
+.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.intro h1{font-size:44px;font-weight:300;letter-spacing:-1px;line-height:1.1}
+.intro p{max-width:560px}
+.group-title{margin:56px 0 20px;display:flex;align-items:baseline;gap:14px}
+.group-title h2{font-family:Fraunces,serif;font-weight:400;font-size:28px;letter-spacing:-.5px}
+.board{display:flex;flex-direction:column;gap:12px}
+.board>.lbl{font-family:"Geist Mono",monospace;font-size:12px;color:#4d5a56}
+.desk{width:100%;max-width:1440px;background:hsl(var(--background));border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -30px rgb(10 26 24/.35);position:relative}
+.row{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:390px;height:844px;background:hsl(var(--background));border-radius:44px;overflow:hidden;position:relative;box-shadow:0 0 0 10px #10201E,0 40px 70px -30px rgb(10 26 24/.6);margin:10px;flex:none}
+.phone .scroll{height:100%;overflow:hidden}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;font-size:14px;font-weight:600}
+.status.dark{color:hsl(var(--primary-foreground))}
+/* header */
+.hdr{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid hsl(var(--border));background:hsl(var(--background))}
+.logo{display:flex;align-items:center;gap:10px}
+.logo b{display:block;font-family:Fraunces,serif;font-weight:600;font-size:23px;line-height:24px;letter-spacing:-.6px;color:hsl(var(--primary))}
+.logo small{display:block;font-family:"Geist Mono",monospace;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:hsl(var(--muted-foreground));line-height:11px}
+.logo.dark b{color:hsl(var(--primary-foreground))}.logo.dark small{color:hsl(var(--accent))}
+.nav{display:flex;gap:4px;padding:4px;background:hsl(var(--muted));border-radius:999px}
+.nav span{padding:8px 18px;border-radius:999px;font-size:14px;font-weight:500;color:hsl(var(--muted-foreground))}
+.nav span.on{background:#fff;color:hsl(var(--foreground));box-shadow:var(--shadow-sm)}
+.keychip{display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid hsl(var(--border));background:#fff;border-radius:999px;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:hsl(var(--success));display:inline-block}
+/* components */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:var(--radius);font:500 14px Geist,sans-serif;border:1px solid transparent;white-space:nowrap;cursor:pointer}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:hsl(var(--primary));color:hsl(var(--primary-foreground));box-shadow:inset 0 1px 0 rgb(255 255 255/.12),0 2px 4px -1px rgb(10 51 46/.25)}
+.btn.secondary{background:hsl(var(--secondary));color:hsl(var(--secondary-foreground))}
+.btn.outline{background:#fff;border-color:hsl(var(--input));color:hsl(var(--foreground))}
+.btn.ghost{background:transparent;color:hsl(var(--foreground))}
+.btn.destructive{background:hsl(var(--destructive));color:hsl(var(--primary-foreground))}
+.btn.sm{height:34px;padding:0 12px;font-size:13px;border-radius:10px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:14px;font-weight:500}
+.input{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border:1px solid hsl(var(--input));background:#fff;border-radius:var(--radius);font-size:15px}
+.input .ph{color:hsl(var(--muted-foreground))}
+.input.err{border:1.5px solid hsl(var(--destructive));box-shadow:0 0 0 4px hsl(var(--destructive)/.14)}
+.input.focus{border:1.5px solid hsl(var(--primary));box-shadow:0 0 0 4px hsl(var(--primary)/.16)}
+.input .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg{font-size:13px;color:hsl(var(--muted-foreground))}
+.msg.err{color:hsl(var(--destructive))}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;line-height:16px;white-space:nowrap}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{background:hsl(var(--success-soft));color:hsl(var(--success))}
+.b-muted{background:hsl(var(--muted));color:hsl(var(--muted-foreground))}
+.b-red{background:hsl(var(--destructive-soft));color:hsl(var(--destructive))}
+.b-acc{background:hsl(var(--accent));color:hsl(var(--accent-foreground))}
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:14px;border:1px solid}
+.alert svg{width:20px;height:20px;flex:none;margin-top:1px}
+.alert .t{font-weight:500;font-size:14px}
+.alert .d{font-size:13px;line-height:20px;color:hsl(var(--foreground))}
+.a-red{background:hsl(var(--destructive-soft));border-color:hsl(var(--destructive)/.25);color:hsl(var(--destructive))}
+.a-warn{background:hsl(var(--warning-soft));border-color:hsl(var(--warning)/.25);color:hsl(var(--warning))}
+.a-ok{background:hsl(var(--success-soft));border-color:hsl(var(--success)/.25);color:hsl(var(--success))}
+.slot{background:#fff;border:1px solid hsl(var(--border));border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-sm);position:relative;text-align:left}
+.slot .tm{font-family:Fraunces,serif;font-size:24px;line-height:28px;letter-spacing:-.5px}
+.slot .rg{font-family:"Geist Mono",monospace;font-size:11px;color:hsl(var(--muted-foreground))}
+.slot .pv{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:hsl(var(--secondary));color:hsl(var(--primary));font-size:12px;font-weight:600}
+.slot.sel{background:hsl(var(--primary));border-color:hsl(var(--primary));color:hsl(var(--primary-foreground));box-shadow:var(--shadow-lg)}
+.slot.sel .rg{color:hsl(var(--primary-foreground)/.75)}.slot.sel .av{background:hsl(var(--primary-deep));color:hsl(var(--accent))}
+.slot.off{background:hsl(var(--muted));box-shadow:none;color:hsl(var(--muted-foreground))}
+.slot.off .tm{text-decoration:line-through;text-decoration-thickness:1px}
+.slot.past{border-style:dashed;opacity:.7}
+.slot .corner{position:absolute;right:12px;top:12px}
+.ck{width:24px;height:24px;border-radius:50%;background:hsl(var(--accent));display:grid;place-items:center}
+.ck svg{width:55%;height:55%}
+.card{background:#fff;border:1px solid hsl(var(--border));border-radius:24px;box-shadow:var(--shadow-sm)}
+.icobub{width:48px;height:48px;border-radius:50%;display:grid;place-items:center}
+.icobub svg{width:22px;height:22px}
+.sep{height:1px;background:hsl(var(--border))}
+/* ticket */
+.ticket{background:#fff;border:1px solid hsl(var(--border));border-radius:28px;box-shadow:var(--shadow-lg);overflow:hidden}
+.band{background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:40px 44px 36px;position:relative;overflow:hidden}
+.band .deco{position:absolute;right:-50px;top:-60px;width:320px;opacity:.09}
+.perf{position:relative;height:28px}
+.perf::before{content:"";position:absolute;left:40px;right:40px;top:13px;border-top:1.5px dashed hsl(var(--border))}
+.perf i{position:absolute;top:0;width:28px;height:28px;border-radius:50%;background:hsl(var(--background));border:1px solid hsl(var(--border))}
+.perf i:first-child{left:-15px}.perf i:last-child{right:-15px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:22px 24px}
+.kv>div{display:flex;flex-direction:column;gap:6px}
+/* table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;background:hsl(var(--muted));padding:12px 24px}
+.tbl td{padding:16px 24px;border-top:1px solid hsl(var(--border));vertical-align:middle}
+.tbl tr.ask td{background:hsl(var(--destructive-soft))}
+.tbl td.r{text-align:right}
+.cxl td{color:hsl(var(--muted-foreground))}
+/* mobile bits */
+.mhdr{display:flex;justify-content:space-between;align-items:center;padding:8px 20px 12px}
+.mhdr .logo b{font-size:20px}
+.chips{display:flex;gap:8px;padding:0 20px;overflow:hidden}
+.chip{flex:none;padding:10px 14px;border-radius:14px;border:1px solid hsl(var(--border));background:#fff;display:flex;flex-direction:column;align-items:center;min-width:72px}
+.chip .over{font-size:10px}
+.chip b{font-family:Fraunces,serif;font-weight:400;font-size:22px;line-height:26px}
+.chip.on{background:hsl(var(--primary));border-color:hsl(var(--primary));color:hsl(var(--primary-foreground))}
+.chip.on .over{color:hsl(var(--accent))}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.scrim{position:absolute;inset:0;background:rgb(11 26 24/.55)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 34px;box-shadow:var(--shadow-lg)}
+.grab{width:40px;height:5px;border-radius:9px;background:hsl(var(--border));margin:0 auto 18px}
+.bottombar{position:absolute;left:0;right:0;bottom:0;padding:14px 20px 32px;background:hsl(var(--background)/.92);backdrop-filter:blur(10px);border-top:1px solid hsl(var(--border))}
+.mtabs{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;justify-content:space-around;padding-top:10px;background:#fff;border-top:1px solid hsl(var(--border))}
+.mtabs span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:500;color:hsl(var(--muted-foreground))}
+.mtabs span.on{color:hsl(var(--primary))}
+.mtabs svg{width:22px;height:22px}
+.bk{background:#fff;border:1px solid hsl(var(--border));border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.toast{position:absolute;box-shadow:var(--shadow-lg)}
+@media (max-width:700px){.canvas{padding:32px 16px}.desk{border-radius:12px}}
+</style>
+</head>
+<body>
+<div class="canvas" id="app"></div>
+<script>
+const ICONS={check:'<path d="M20 6 9 17l-5-5"/>',arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',alert:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',timer:'<path d="M10 2h4M12 14l3-3"/><circle cx="12" cy="14" r="8"/>',copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',chev:'<path d="m6 9 6 6 6-6"/>',shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>'};
+const ic=(n,c='currentColor',s=16,w=2)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+const mark=(s=36,bg='#0F4C45',plus='#F6F3EC',leaf='#F2B35B')=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="${bg}"/><path d="M20 11v18M11 20h18" stroke="${plus}" stroke-width="4.5" stroke-linecap="round"/><path d="M23.5 16.5c0-4.4 2.9-7.3 7.5-7.5-.2 4.6-3.1 7.5-7.5 7.5z" fill="${leaf}"/></svg>`;
+const deco=`<svg class="deco" viewBox="0 0 40 40"><path d="M20 11v18M11 20h18" stroke="#F6F3EC" stroke-width="4.5" stroke-linecap="round"/><path d="M23.5 16.5c0-4.4 2.9-7.3 7.5-7.5-.2 4.6-3.1 7.5-7.5 7.5z" fill="#F2B35B"/></svg>`;
+const logo=(dark,s=36)=>`<div class="logo ${dark?'dark':''}">${dark?mark(s,'#F6F3EC','#0F4C45'):mark(s)}<div><b>alafia</b><small>clinic</small></div></div>`;
+const hdr=a=>`<div class="hdr">${logo(false,32)}<div class="nav"><span class="${a==='book'?'on':''}">Book a visit</span><span class="${a==='mine'?'on':''}">My bookings</span></div><div style="display:flex;align-items:center;gap:8px"><div class="keychip"><span class="dot"></span><span class="muted" style="font-weight:500">API key</span><span class="mono">••••3f9a</span></div><button class="btn ghost">Change key</button></div></div>`;
+const slot=(t,e,p,st='')=>`<div class="slot ${st==='sel'?'sel':''} ${st==='booked'||st==='past'?'off':''} ${st==='past'?'past':''}">${st==='sel'?`<span class="corner ck">${ic('check','#3A2405',14,3)}</span>`:st==='booked'?`<span class="corner muted">${ic('lock')}</span>`:''}<div><div class="tm">${t}</div><div class="rg">to ${e} · 30 min</div></div><div class="pv"><span class="av">${p.split(' ')[1][0]}</span>${p}</div><div>${st==='sel'?'<span class="badge b-acc">Selected</span>':st==='booked'?'<span class="badge b-muted">Booked</span>':st==='past'?'<span class="badge b-muted">Past</span>':'<span class="badge b-ok">Available</span>'}</div></div>`;
+const status=(dark)=>`<div class="status ${dark?'dark':''}"><span>9:41</span><span class="mono" style="font-size:12px">●●● 5G ▮</span></div>`;
+const mtabs=a=>`<div class="mtabs"><span class="${a==='book'?'on':''}">${ic('cal','currentColor',22)}Book</span><span class="${a==='mine'?'on':''}">${ic('list','currentColor',22)}My bookings</span><span>${ic('key','currentColor',22)}API key</span></div>`;
+const mhdr=()=>`${status()}<div class="mhdr">${logo(false,30)}<div class="keychip" style="padding:5px 10px"><span class="dot"></span><span class="mono">••3f9a</span></div></div>`;
+const summary=(compact)=>`<div style="display:flex;gap:14px;align-items:center;background:hsl(var(--secondary));border-radius:16px;padding:14px"><div style="width:56px;height:64px;border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="over" style="color:hsl(var(--destructive))">Dec</span><span class="serif" style="font-size:26px;line-height:28px">10</span></div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:${compact?16:18}px">Thu, 10 December</div><div class="mono muted" style="font-size:12px">09:30 – 10:00 · 30 min</div><div class="small" style="color:hsl(var(--secondary-foreground))">with Dr Ade</div></div><span class="small" style="font-weight:500;color:hsl(var(--primary))">Change</span></div>`;
+
+/* ========== DESKTOP ========== */
+const D6=`<div class="desk">${hdr('book')}
+<div style="padding:56px 64px 72px;display:flex;flex-direction:column;align-items:center;gap:20px">
+ <div class="ticket" style="width:680px;max-width:100%">
+  <div class="band">${deco}
+   <div class="ck" style="width:48px;height:48px;margin-bottom:14px">${ic('check','#3A2405',24,3)}</div>
+   <div class="over" style="color:hsl(var(--accent))">Booking confirmed</div>
+   <div class="serif" style="font-size:48px;font-weight:300;letter-spacing:-1.5px;line-height:54px;margin:10px 0 8px">You’re booked, <em style="font-weight:300;color:hsl(var(--accent))">Ada.</em></div>
+   <div style="font-size:17px;opacity:.78">Thursday 10 December · 09:30 – 10:00 with Dr Ade</div>
+  </div>
+  <div class="perf"><i></i><i></i></div>
+  <div style="padding:12px 44px 40px;display:flex;flex-direction:column;gap:26px">
+   <div class="kv">
+    <div><span class="over">Booking ID</span><span class="mono" style="display:flex;gap:8px;align-items:center;font-size:15px">bk_7Hq2xP9Lm <span class="muted">${ic('copy','currentColor',15)}</span></span></div>
+    <div><span class="over">Status</span><span><span class="badge b-ok">Confirmed</span></span></div>
+    <div><span class="over">Provider</span>Dr Ade</div><div><span class="over">Date</span>Thu, 10 Dec 2026</div>
+    <div><span class="over">Time</span>09:30 – 10:00 (WAT)</div><div><span class="over">Booked at</span>15 Nov 2026, 16:02</div>
+    <div><span class="over">Name</span>Ada Obi</div><div><span class="over">Email</span>ada@example.com</div>
+   </div>
+   <div class="field"><label>Shareable link</label>
+    <div style="display:flex;gap:10px"><div class="input" style="flex:1;background:hsl(var(--muted));min-width:0"><span class="muted">${ic('link')}</span><span class="grow mono" style="font-size:13px">alafia-booking.vercel.app/?booking=bk_7Hq2xP9Lm</span></div><button class="btn secondary">Copy link</button></div>
+    <span class="msg">Anyone with this link can view this booking.</span></div>
+   <div style="display:flex;gap:12px"><button class="btn outline" style="flex:1">View my bookings</button><button class="btn primary" style="flex:1">Book another time ${ic('arrow')}</button></div>
+  </div>
+ </div>
+ <p class="small muted">Need to cancel? Open My bookings. Cancelling frees the slot for someone else.</p>
+</div></div>`;
+
+const rows=[['bk_2mQ8aLx4','Mon 30 Nov · 09:00','Dr Bello','c','10 Nov 2026'],['bk_5Tz1kP0d','Wed 2 Dec · 14:00','Dr Chen','ok','12 Nov 2026'],['bk_7Hq2xP9Lm','Thu 10 Dec · 09:30','Dr Ade','ok','15 Nov 2026','new'],['bk_9Ka4vR2s','Fri 11 Dec · 10:30','Dr Ade','ok','15 Nov 2026','ask'],['bk_3Rf6wN8y','Mon 14 Dec · 11:00','Dr Bello','c','15 Nov 2026']];
+const D7=`<div class="desk">${hdr('mine')}
+<div style="padding:48px 64px 72px;display:flex;flex-direction:column;gap:28px">
+ <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+  <div style="display:flex;flex-direction:column;gap:10px"><span class="over">My bookings</span><h2 class="serif" style="font-weight:400;font-size:36px;letter-spacing:-1px;line-height:42px">Your appointments</h2><span class="muted">Every booking made with this email, oldest first.</span></div>
+  <div style="display:flex;gap:12px;align-items:flex-end"><div class="field" style="width:340px"><label>Email</label><div class="input"><span class="muted">${ic('search')}</span><span class="grow">ada@example.com</span></div></div><button class="btn primary">Find bookings</button></div>
+ </div>
+ <div class="card" style="overflow:hidden;border-radius:20px">
+  <table class="tbl"><thead><tr>${['Booking','When','Provider','Status','Booked on',''].map((h,i)=>`<th class="over ${i===5?'r':''}">${h||'Actions'}</th>`).join('')}</tr></thead><tbody>
+  ${rows.map(([id,w,p,s,c,f])=>`<tr class="${s==='c'?'cxl':''} ${f==='ask'?'ask':''}"><td><span class="mono" style="font-size:14px">${id}</span> ${f==='new'?'<span class="badge b-acc" style="margin-left:6px">New</span>':''}</td><td>${w}</td><td>${p}</td><td>${s==='c'?'<span class="badge b-red">Cancelled</span>':'<span class="badge b-ok">Confirmed</span>'}</td><td class="mono small">${c}</td><td class="r">${s==='c'?'<span class="muted">—</span>':f==='ask'?`<span style="display:inline-flex;gap:8px;align-items:center"><span class="small" style="color:hsl(var(--destructive))">Cancel this booking?</span><button class="btn ghost sm">Keep</button><button class="btn destructive sm">Yes, cancel</button></span>`:'<button class="btn outline sm">Cancel</button>'}</td></tr>`).join('')}
+  </tbody></table>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:hsl(var(--muted));border-top:1px solid hsl(var(--border))"><span class="mono small muted">Showing 5 · page 1</span><button class="btn outline">Load more ${ic('chev')}</button></div>
+ </div>
+</div>
+<div class="alert a-ok toast" style="right:48px;top:92px;width:380px;background:#fff">${ic('check')}<div><div class="t">Booking cancelled</div><div class="d">Mon 14 Dec, 11:00 with Dr Bello is free again.</div></div></div>
+</div>`;
+
+/* ========== MOBILE ========== */
+const M1=`<div class="phone"><div class="scroll">
+ <div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding-bottom:64px;position:relative;overflow:hidden">${status(true)}
+  <div style="padding:8px 24px 0">${logo(true,32)}</div>
+  <div style="padding:40px 24px 0"><div class="over" style="color:hsl(var(--accent))">Patient booking</div>
+  <div class="serif" style="font-size:42px;font-weight:300;line-height:46px;letter-spacing:-1.2px;margin-top:12px">Care, on your<br><em style="color:hsl(var(--accent))">own schedule.</em></div></div>
+  <svg style="position:absolute;right:-70px;bottom:-90px;width:260px;opacity:.08" viewBox="0 0 40 40"><path d="M20 11v18M11 20h18" stroke="#F6F3EC" stroke-width="4.5" stroke-linecap="round"/><path d="M23.5 16.5c0-4.4 2.9-7.3 7.5-7.5-.2 4.6-3.1 7.5-7.5 7.5z" fill="#F2B35B"/></svg>
+ </div>
+ <div class="card" style="margin:-36px 16px 0;position:relative;padding:24px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow-lg)">
+  <div><h3 class="serif" style="font-weight:400;font-size:24px;line-height:30px">Enter your clinic API key</h3><p class="small muted" style="margin-top:6px">You only need to add it once on this device.</p></div>
+  <div class="alert a-red">${ic('alert')}<div><div class="t">That key wasn’t accepted</div><div class="d">The server replied 401. Check the key and try again.</div></div></div>
+  <div class="field"><label>API key</label><div class="input err"><span class="grow mono" style="font-size:14px">ak_live_7f2c••••••3f9b</span></div><span class="msg">Saved in this browser only.</span></div>
+  <button class="btn primary block">Save key and continue ${ic('arrow')}</button>
+ </div>
+</div></div>`;
+
+const M2=`<div class="phone"><div class="scroll">${mhdr()}
+ <div style="padding:6px 20px 16px"><div class="over">Book a visit</div><h3 class="serif" style="font-weight:400;font-size:28px;line-height:34px;letter-spacing:-.5px;margin-top:6px">Choose a time</h3><div class="small muted" style="display:flex;gap:6px;align-items:center;margin-top:4px">${ic('globe','currentColor',13)} Local time · WAT</div></div>
+ <div class="chips"><div class="chip"><span class="over">Today</span><b>9</b><span class="small muted">1 open</span></div><div class="chip on"><span class="over">Thu</span><b>10</b><span class="small" style="opacity:.75">6 open</span></div><div class="chip"><span class="over">Fri</span><b>11</b><span class="small muted">3 open</span></div><div class="chip"><span class="over">Mon</span><b>14</b><span class="small muted">5 open</span></div></div>
+ <div style="padding:14px 20px"><div class="input" style="height:42px"><span class="grow">All providers</span><span class="muted">${ic('chev')}</span></div></div>
+ <div class="g2" style="padding:0 20px">${slot('09:00','09:30','Dr Ade','booked')}${slot('09:30','10:00','Dr Ade')}${slot('10:00','10:30','Dr Bello')}${slot('10:30','11:00','Dr Chen','booked')}${slot('11:00','11:30','Dr Ade')}${slot('11:30','12:00','Dr Bello')}</div>
+ ${mtabs('book')}
+</div></div>`;
+
+const sheetBehind=`${mhdr()}<div style="padding:6px 20px 16px"><h3 class="serif" style="font-weight:400;font-size:28px">Choose a time</h3></div><div class="g2" style="padding:0 20px">${slot('09:00','09:30','Dr Ade','booked')}${slot('09:30','10:00','Dr Ade','sel')}${slot('10:00','10:30','Dr Bello')}${slot('10:30','11:00','Dr Chen','booked')}</div><div class="scrim"></div>`;
+
+const M3=`<div class="phone"><div class="scroll">${sheetBehind}
+ <div class="sheet"><div class="grab"></div><div style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;justify-content:space-between"><span class="over">Your appointment</span><span class="over">Step 2 of 2</span></div>
+  ${summary(true)}
+  <div class="field"><label>Full name</label><div class="input err"><span class="grow ph">e.g. Ada Obi</span><span style="color:hsl(var(--destructive))">${ic('alert','currentColor',18)}</span></div><span class="msg err">name is required</span></div>
+  <div class="field"><label>Email</label><div class="input err"><span class="grow">ada@example</span><span style="color:hsl(var(--destructive))">${ic('alert','currentColor',18)}</span></div><span class="msg err">email is invalid</span></div>
+  <button class="btn primary block">Confirm booking ${ic('arrow')}</button>
+ </div></div>
+</div></div>`;
+
+const M4=`<div class="phone"><div class="scroll" style="background:hsl(var(--background))">
+ <div class="band" style="padding:0 24px 32px">${status(true)}${deco.replace('class="deco"','class="deco" style="right:-90px;top:-40px;width:240px"')}
+  <div class="ck" style="width:44px;height:44px;margin:18px 0 14px">${ic('check','#3A2405',22,3)}</div>
+  <div class="over" style="color:hsl(var(--accent))">Booking confirmed</div>
+  <div class="serif" style="font-size:36px;font-weight:300;line-height:40px;letter-spacing:-1px;margin:8px 0 6px">You’re booked, <em style="color:hsl(var(--accent))">Ada.</em></div>
+  <div style="opacity:.78">Thu 10 Dec · 09:30 – 10:00<br>with Dr Ade</div>
+ </div>
+ <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+  <div class="bk" style="gap:14px">
+   <div style="display:flex;justify-content:space-between;align-items:center"><span class="over">Booking ID</span><span class="badge b-ok">Confirmed</span></div>
+   <div class="mono" style="display:flex;justify-content:space-between;font-size:16px">bk_7Hq2xP9Lm <span class="muted">${ic('copy')}</span></div>
+   <div class="sep"></div>
+   <div class="kv" style="gap:14px"><div><span class="over">Name</span>Ada Obi</div><div><span class="over">Email</span><span style="overflow:hidden;text-overflow:ellipsis">ada@example.com</span></div></div>
+  </div>
+  <div class="input" style="background:hsl(var(--muted))"><span class="muted">${ic('link')}</span><span class="grow mono" style="font-size:12px">…/?booking=bk_7Hq2xP9Lm</span><span class="small" style="font-weight:500;color:hsl(var(--primary))">Copy</span></div>
+  <button class="btn primary block">Book another time</button><button class="btn outline block">View my bookings</button>
+ </div>
+</div></div>`;
+
+const M5=`<div class="phone"><div class="scroll">${mhdr()}
+ <div style="padding:6px 20px 14px"><div class="over">My bookings</div><h3 class="serif" style="font-weight:400;font-size:28px;line-height:34px;margin-top:6px">Your appointments</h3></div>
+ <div style="padding:0 20px 14px;display:flex;gap:8px"><div class="input" style="flex:1;height:44px"><span class="muted">${ic('search')}</span><span class="grow">ada@example.com</span></div><button class="btn primary" style="padding:0 16px">Find</button></div>
+ <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+  ${[['Wed 2 Dec · 14:00','Dr Chen','bk_5Tz1kP0d','ok'],['Thu 10 Dec · 09:30','Dr Ade','bk_7Hq2xP9Lm','ok'],['Mon 14 Dec · 11:00','Dr Bello','bk_3Rf6wN8y','c']].map(([w,p,id,s])=>`<div class="bk" style="${s==='c'?'background:hsl(var(--muted));':''}"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:600;${s==='c'?'color:hsl(var(--muted-foreground))':''}">${w}</div><div class="small muted">${p} · <span class="mono">${id}</span></div></div>${s==='c'?'<span class="badge b-red">Cancelled</span>':'<span class="badge b-ok">Confirmed</span>'}</div>${s==='c'?'':'<button class="btn outline sm block">Cancel booking</button>'}</div>`).join('')}
+  <button class="btn ghost block" style="color:hsl(var(--primary))">Load more ${ic('chev')}</button>
+ </div>
+ ${mtabs('mine')}
+</div></div>`;
+
+const M6=`<div class="phone"><div class="scroll">${sheetBehind}
+ <div class="sheet"><div class="grab"></div><div style="display:flex;flex-direction:column;gap:16px">
+  <div class="icobub" style="background:hsl(var(--destructive-soft));color:hsl(var(--destructive))">${ic('alert','currentColor',22)}</div>
+  <div><h3 class="serif" style="font-weight:400;font-size:26px;line-height:32px">Someone just booked this slot</h3><p class="small muted" style="margin-top:6px">Dr Ade at 09:30 was taken a moment before you. Your details are kept.</p></div>
+  <div class="over">Nearby open times</div>
+  <div class="g2">${slot('10:00','10:30','Dr Bello')}${slot('11:00','11:30','Dr Ade','sel')}</div>
+  <button class="btn primary block">Book 11:00 instead ${ic('arrow')}</button><button class="btn ghost block">See all times</button>
+ </div></div>
+</div></div>`;
+
+const M7=`<div class="phone"><div class="scroll">${sheetBehind}
+ <div class="sheet"><div class="grab"></div><div style="display:flex;flex-direction:column;gap:16px">
+  ${summary(true)}
+  <div class="alert a-warn">${ic('timer')}<div><div class="t">Too many attempts</div><div class="d">We allow 5 tries a minute per email. Try again in 42 seconds.</div></div></div>
+  <div class="field"><label>Full name</label><div class="input"><span class="grow">Ada Obi</span></div></div>
+  <div class="field"><label>Email</label><div class="input"><span class="grow">ada@example.com</span></div></div>
+  <button class="btn primary block" disabled>${ic('timer')} Try again in 0:42</button>
+ </div></div>
+</div></div>`;
+
+const b=(l,h)=>`<div class="board"><div class="lbl">${l}</div>${h}</div>`;
+document.getElementById('app').innerHTML=`
+<div class="intro"><div><div class="over">Alafia Clinic · booking page · mockups part 2</div><h1 class="serif" style="margin-top:10px">Confirmation, My bookings &amp; mobile</h1></div>
+<p class="muted small">D1–D5 (API key, slots, booking form errors, 409, 429) and the brand and components are in the Figma file. These screens finish the set with the same tokens: Fraunces, Geist and Geist Mono, pine and saffron, shadcn/ui component names.</p></div>
+<div class="group-title"><span class="over">Desktop · 1440</span><h2>D6 · D7</h2></div>
+<div style="display:flex;flex-direction:column;gap:48px">${b('D6 · Confirmation + shareable link (GET /bookings/{id})',D6)}${b('D7 · My bookings: cursor paging, inline cancel confirm, success toast (DELETE /bookings/{id})',D7)}</div>
+<div class="group-title"><span class="over">Mobile · 390 × 844</span><h2>M1 – M7</h2></div>
+<div class="row">${b('M1 · API key, 401 rejected',M1)}${b('M2 · Slots by day',M2)}${b('M3 · Booking sheet, 400 errors',M3)}${b('M4 · Confirmation',M4)}${b('M5 · My bookings',M5)}${b('M6 · Slot taken (409)',M6)}${b('M7 · Rate limited (429)',M7)}</div>`;
+</script>
+</body>
+</html>
