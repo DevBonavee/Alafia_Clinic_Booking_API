@@ -191,18 +191,28 @@ select.input { appearance: none; -webkit-appearance: none; width: 100%; height: 
 .page-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
 .tz-line { display: flex; align-items: center; gap: 6px; margin-top: -4px; }
 
-/* ---------- key screen (D1 / M1) ---------- */
-.view-key { min-height: 100vh; }
-.keyband { position: relative; overflow: hidden; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); padding: 32px 24px 120px; }
-.keyband-inner { max-width: 512px; margin: 0 auto; }
-.keyband .logo { margin-bottom: 48px; }
-.keyband .over { margin-bottom: 12px; }
-.hero { font-size: 48px; font-weight: 300; line-height: 52px; letter-spacing: -1.4px; }
+/* ---------- key screen: D0 desktop split, M1 mobile band + card ---------- */
+.view-key { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+.keyband { position: relative; overflow: hidden; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); padding: 64px; }
+.keyband-inner { position: relative; z-index: 1; height: 100%; min-height: calc(100vh - 128px); display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+.keyband-copy .over { margin-bottom: 22px; }
+.hero { font-size: 76px; font-weight: 300; line-height: 80px; letter-spacing: -2.5px; }
 .hero em, .band-title em { color: hsl(var(--accent)); font-weight: 300; }
+.hero-sub { margin-top: 22px; font-size: 17px; max-width: 460px; opacity: .72; }
+.key-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+.key-stats .serif { font-size: 36px; line-height: 42px; }
+.key-stats .over { color: hsl(var(--primary-foreground)); opacity: .6; }
 .band-deco { position: absolute; right: -60px; bottom: -90px; width: 320px; opacity: .08; pointer-events: none; }
 .band-deco svg { width: 100%; height: auto; }
-.keycard { position: relative; max-width: 512px; margin: -72px auto 48px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: var(--shadow-lg); }
-.keycard .small { margin-top: 6px; }
+.keyband .band-deco { right: -160px; bottom: -140px; width: 640px; }
+.keyside { display: grid; place-items: center; padding: 48px; }
+.keycard { position: relative; width: 460px; max-width: 100%; padding: 40px; display: flex; flex-direction: column; gap: 22px; box-shadow: var(--shadow-lg); }
+.key-form { gap: 22px; }
+.key-ico { border-radius: 14px; background: hsl(var(--secondary)); color: hsl(var(--primary)); }
+.h-key { font-weight: 400; font-size: 28px; line-height: 34px; letter-spacing: -.5px; }
+.key-desc { margin-top: 8px; }
+.sep { height: 1px; background: hsl(var(--border)); }
+.lock-line { display: flex; gap: 10px; align-items: center; }
 
 /* ---------- day chips, filters ---------- */
 .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; margin: 0 -2px 16px; scrollbar-width: none; }
@@ -353,10 +363,19 @@ select.input { appearance: none; -webkit-appearance: none; width: 100%; height: 
   .page-head { gap: 6px; margin-bottom: 16px; }
   .h-page { font-size: 28px; line-height: 34px; letter-spacing: -.5px; }
 
+  .view-key { display: block; }
   .keyband { padding: 24px 24px 100px; }
+  .keyband-inner { min-height: 0; display: block; }
   .keyband .logo { margin-bottom: 40px; }
+  .keyband .mark svg { width: 32px; height: 32px; }
+  .keyband-copy .over { margin-bottom: 12px; }
   .hero { font-size: 42px; line-height: 46px; letter-spacing: -1.2px; }
-  .keycard { margin: -64px 16px 32px; padding: 24px; }
+  .keyband .band-deco { right: -70px; bottom: -90px; width: 260px; }
+  .keyside { display: block; padding: 0; }
+  .keycard { width: auto; margin: -64px 16px 32px; padding: 24px; gap: 18px; }
+  .key-form { gap: 18px; }
+  .h-key { font-size: 24px; line-height: 30px; letter-spacing: 0; }
+  .key-desc { margin-top: 6px; font-size: 13px; line-height: 20px; }
 
   .chips { margin: 0 -20px 4px; padding: 2px 20px 6px; }
   .filters { margin: 10px 0 14px; }

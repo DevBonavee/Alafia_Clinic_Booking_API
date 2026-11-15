@@ -682,17 +682,15 @@
     const value = $('api-key').value.trim();
     if (!value) {
       $('api-key-wrap').classList.add('err');
-      $('api-key-msg').textContent = 'Paste your API key first.';
-      $('api-key-msg').classList.add('err');
+      $('api-key-error').hidden = false;
       return;
     }
-    $('api-key-msg').textContent = 'Saved in this browser only.';
-    $('api-key-msg').classList.remove('err');
+    $('api-key-error').hidden = true;
     apiKey = value;
     store.set(KEY_STORAGE, value);
     route();
   });
-  $('api-key').addEventListener('input', () => $('api-key-wrap').classList.remove('err'));
+  $('api-key').addEventListener('input', () => { $('api-key-wrap').classList.remove('err'); $('api-key-error').hidden = true; });
 
   const changeKey = () => { apiKey = ''; store.set(KEY_STORAGE, ''); showKeyView(false); };
   $('change-key').addEventListener('click', changeKey);

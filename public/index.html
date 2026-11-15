@@ -31,34 +31,50 @@
 
   <main id="main">
     <!-- D1 / M1: API key -->
+    <!-- D0 (desktop split) / M1 (mobile band + card) -->
     <section class="view view-key" id="view-key" hidden aria-labelledby="key-title">
       <div class="keyband">
         <div class="keyband-inner">
-          <span class="logo dark"><span class="mark" data-mark="dark" data-size="32"></span><span class="logo-text"><b>alafia</b><small>clinic</small></span></span>
-          <p class="over accent">Patient booking</p>
-          <p class="hero serif">Care, on your<br><em>own schedule.</em></p>
+          <span class="logo dark"><span class="mark" data-mark="dark" data-size="36"></span><span class="logo-text"><b>alafia</b><small>clinic</small></span></span>
+          <div class="keyband-copy">
+            <p class="over accent">Patient booking<span class="desk-only"> · Alafia Clinic</span></p>
+            <p class="hero serif">Care, on your<br><em>own schedule.</em></p>
+            <p class="hero-sub desk-only">See open times, book in under a minute, and leave with a confirmation you can share.</p>
+          </div>
+          <div class="key-stats desk-only">
+            <div><div class="serif">30 min</div><div class="over">per appointment</div></div>
+            <div><div class="serif">3</div><div class="over">doctors this week</div></div>
+            <div><div class="serif">0</div><div class="over">double bookings, ever</div></div>
+          </div>
         </div>
         <span class="band-deco" data-deco></span>
       </div>
-      <div class="card keycard">
-        <div>
-          <h1 class="serif h-card" id="key-title">Enter your clinic API key</h1>
-          <p class="small muted">You only need to add it once on this device.</p>
-        </div>
-        <div class="alert a-red" id="key-error" role="alert" hidden>
-          <span data-icon="alert"></span>
-          <div><div class="t">That key wasn’t accepted</div><div class="d">The server replied 401. Check the key and try again.</div></div>
-        </div>
-        <form id="key-form" class="stack" novalidate>
-          <div class="field">
-            <label for="api-key">API key</label>
-            <div class="input" id="api-key-wrap">
-              <input id="api-key" class="mono" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key">
-            </div>
-            <span class="msg" id="api-key-msg">Saved in this browser only.</span>
+      <div class="keyside">
+        <div class="card keycard">
+          <div class="icobub key-ico desk-only"><span data-icon="key" data-size="22"></span></div>
+          <div>
+            <h1 class="serif h-key" id="key-title">Enter your clinic API key</h1>
+            <p class="muted key-desc"><span class="desk-only">Every request to the booking service carries this key. </span>You only need to add it once on this device.</p>
           </div>
-          <button type="submit" class="btn primary block">Save key and continue <span data-icon="arrow"></span></button>
-        </form>
+          <div class="alert a-red" id="key-error" role="alert" hidden>
+            <span data-icon="alert"></span>
+            <div><div class="t">That key wasn’t accepted</div><div class="d">The server replied 401<span class="desk-only"> (invalid or missing API key)</span>. Check the key and try again.</div></div>
+          </div>
+          <form id="key-form" class="stack key-form" novalidate>
+            <div class="field">
+              <label for="api-key">API key</label>
+              <div class="input" id="api-key-wrap">
+                <input id="api-key" class="mono" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key">
+                <span class="err-ic" data-icon="alert" data-size="18"></span>
+              </div>
+              <span class="msg err" id="api-key-error" hidden>Paste your API key first.</span>
+              <span class="msg">Saved in this browser only<span class="desk-only"> (localStorage). Never put in the page code</span>.</span>
+            </div>
+            <button type="submit" class="btn primary block">Save key and continue <span data-icon="arrow"></span></button>
+          </form>
+          <div class="sep desk-only"></div>
+          <p class="small muted lock-line desk-only"><span data-icon="lock"></span> No key? Ask the clinic front desk for one.</p>
+        </div>
       </div>
     </section>
 

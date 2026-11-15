@@ -161,6 +161,28 @@ const mhdr=()=>`${status()}<div class="mhdr">${logo(false,30)}<div class="keychi
 const summary=(compact)=>`<div style="display:flex;gap:14px;align-items:center;background:hsl(var(--secondary));border-radius:16px;padding:14px"><div style="width:56px;height:64px;border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="over" style="color:hsl(var(--destructive))">Dec</span><span class="serif" style="font-size:26px;line-height:28px">10</span></div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:${compact?16:18}px">Thu, 10 December</div><div class="mono muted" style="font-size:12px">09:30 – 10:00 · 30 min</div><div class="small" style="color:hsl(var(--secondary-foreground))">with Dr Ade</div></div><span class="small" style="font-weight:500;color:hsl(var(--primary))">Change</span></div>`;
 
 /* ========== DESKTOP ========== */
+const D0=`<div class="desk" style="display:flex;min-height:900px">
+ <div style="flex:0 0 50%;background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:64px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+  ${logo(true,36)}
+  <div style="position:relative;z-index:1"><div class="over" style="color:hsl(var(--accent))">Patient booking · Alafia Clinic</div>
+   <div class="serif" style="font-size:76px;font-weight:300;line-height:80px;letter-spacing:-2.5px;margin:22px 0 22px">Care, on your<br><em style="color:hsl(var(--accent))">own schedule.</em></div>
+   <p style="font-size:17px;max-width:460px;opacity:.72">See open times, book in under a minute, and leave with a confirmation you can share.</p></div>
+  <div style="display:flex;gap:40px;position:relative;z-index:1">${[['30 min','per appointment'],['3','doctors this week'],['0','double bookings, ever']].map(([n,l])=>`<div><div class="serif" style="font-size:36px;line-height:42px">${n}</div><div class="over" style="color:hsl(var(--primary-foreground));opacity:.6">${l}</div></div>`).join('')}</div>
+  <svg style="position:absolute;right:-160px;bottom:-140px;width:640px;opacity:.08" viewBox="0 0 40 40"><path d="M20 11v18M11 20h18" stroke="#F6F3EC" stroke-width="4.5" stroke-linecap="round"/><path d="M23.5 16.5c0-4.4 2.9-7.3 7.5-7.5-.2 4.6-3.1 7.5-7.5 7.5z" fill="#F2B35B"/></svg>
+ </div>
+ <div style="flex:1;display:grid;place-items:center;padding:48px">
+  <div class="card" style="width:460px;max-width:100%;padding:40px;display:flex;flex-direction:column;gap:22px;box-shadow:var(--shadow-lg)">
+   <div class="icobub" style="border-radius:14px;background:hsl(var(--secondary));color:hsl(var(--primary))">${ic('key','currentColor',22)}</div>
+   <div><h3 class="serif" style="font-weight:400;font-size:28px;line-height:34px;letter-spacing:-.5px">Enter your clinic API key</h3><p class="muted" style="margin-top:8px">Every request to the booking service carries this key. You only need to add it once on this device.</p></div>
+   <div class="alert a-red">${ic('alert')}<div><div class="t">That key wasn’t accepted</div><div class="d">The server replied 401 (invalid or missing API key). Check the key and try again.</div></div></div>
+   <div class="field"><label>API key</label><div class="input err"><span class="grow mono" style="font-size:14px">ak_live_7f2c••••••••••••3f9b</span><span style="color:hsl(var(--destructive))">${ic('alert','currentColor',18)}</span></div><span class="msg">Saved in this browser only (localStorage). Never put in the page code.</span></div>
+   <button class="btn primary block">Save key and continue ${ic('arrow')}</button>
+   <div class="sep"></div>
+   <div class="small muted" style="display:flex;gap:10px;align-items:center">${ic('lock')} No key? Ask the clinic front desk for one.</div>
+  </div>
+ </div>
+</div>`;
+
 const D6=`<div class="desk">${hdr('book')}
 <div style="padding:56px 64px 72px;display:flex;flex-direction:column;align-items:center;gap:20px">
  <div class="ticket" style="width:680px;max-width:100%">
@@ -294,8 +316,8 @@ const b=(l,h)=>`<div class="board"><div class="lbl">${l}</div>${h}</div>`;
 document.getElementById('app').innerHTML=`
 <div class="intro"><div><div class="over">Alafia Clinic · booking page · mockups part 2</div><h1 class="serif" style="margin-top:10px">Confirmation, My bookings &amp; mobile</h1></div>
 <p class="muted small">D1–D5 (API key, slots, booking form errors, 409, 429) and the brand and components are in the Figma file. These screens finish the set with the same tokens: Fraunces, Geist and Geist Mono, pine and saffron, shadcn/ui component names.</p></div>
-<div class="group-title"><span class="over">Desktop · 1440</span><h2>D6 · D7</h2></div>
-<div style="display:flex;flex-direction:column;gap:48px">${b('D6 · Confirmation + shareable link (GET /bookings/{id})',D6)}${b('D7 · My bookings: cursor paging, inline cancel confirm, success toast (DELETE /bookings/{id})',D7)}</div>
+<div class="group-title"><span class="over">Desktop · 1440</span><h2>D0 · D6 · D7</h2></div>
+<div style="display:flex;flex-direction:column;gap:48px">${b('D0 · API key entry, 401 rejected (no-key and success states are D1 in Figma)',D0)}${b('D6 · Confirmation + shareable link (GET /bookings/{id})',D6)}${b('D7 · My bookings: cursor paging, inline cancel confirm, success toast (DELETE /bookings/{id})',D7)}</div>
 <div class="group-title"><span class="over">Mobile · 390 × 844</span><h2>M1 – M7</h2></div>
 <div class="row">${b('M1 · API key, 401 rejected',M1)}${b('M2 · Slots by day',M2)}${b('M3 · Booking sheet, 400 errors',M3)}${b('M4 · Confirmation',M4)}${b('M5 · My bookings',M5)}${b('M6 · Slot taken (409)',M6)}${b('M7 · Rate limited (429)',M7)}</div>`;
 </script>
