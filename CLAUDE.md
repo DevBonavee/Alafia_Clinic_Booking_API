@@ -1,0 +1,4 @@
+- Never run git commit, git push, or any command that changes git history. I commit myself.
+- After each finished step, give me a short commit message I can copy (conventional style, e.g. "feat: add slot listing endpoint").
+- Follow PLAN.md for the build and HANDOFF.md for the design (logo, fonts, colours).
+- Never commit or print secrets; .env.local stays out of git.
