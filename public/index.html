@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alafia Clinic · Book an appointment</title>
+  <meta name="description" content="Book an appointment slot at Alafia Clinic.">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Alafia Clinic home">
+        <img src="/logo.svg" width="40" height="40" alt="">
+        <span class="wordmark"><span class="wordmark-name">alafia</span><span class="wordmark-sub">CLINIC</span></span>
+      </a>
+      <div class="key-chip" id="key-chip" hidden>
+        <span class="dot" aria-hidden="true"></span>
+        <span class="mono"><span class="key-label">Key </span>····<span id="key-last4"></span></span>
+        <button type="button" class="btn btn-ghost btn-sm" id="change-key">Change key</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <!-- D1: API key -->
+    <section class="view view-key" id="view-key" hidden aria-labelledby="key-title">
+      <div class="panel key-panel">
+        <p class="overline">Step 1 of 2</p>
+        <h1 class="display" id="key-title">Enter your <em>API key</em></h1>
+        <p class="lede">The booking service needs a key before it shows slots. It stays in this browser and is sent with each request.</p>
+        <div class="alert alert-error" id="key-error" role="alert" hidden></div>
+        <form id="key-form" class="stack" novalidate>
+          <div class="field">
+            <label for="api-key">API key</label>
+            <input id="api-key" name="api-key" class="input mono" type="password" autocomplete="off" spellcheck="false" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save key</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- D2/D3: slots + booking form -->
+    <section class="view view-slots" id="view-slots" hidden aria-labelledby="slots-title">
+      <div class="page-head">
+        <p class="overline">Appointments</p>
+        <h1 class="display" id="slots-title">Choose a <em>time</em></h1>
+        <p class="lede">Times are shown in your timezone (<span id="tz"></span>).</p>
+      </div>
+
+      <div class="alert" id="page-alert" role="alert" hidden></div>
+
+      <div class="layout">
+        <div class="slots-col">
+          <div class="tabs" role="tablist" aria-label="Filter by provider" id="provider-tabs"></div>
+          <select class="input provider-select" id="provider-select" aria-label="Filter by provider"></select>
+          <div id="slot-groups" aria-live="polite"></div>
+          <p class="empty" id="slots-empty" hidden>No slots to show.</p>
+          <p class="empty" id="slots-loading">Loading slots…</p>
+        </div>
+
+        <aside class="panel form-panel" id="form-panel" aria-labelledby="form-title">
+          <div id="form-placeholder">
+            <p class="overline">Your booking</p>
+            <h2 class="h3" id="form-title">Pick an open slot</h2>
+            <p class="muted">Then add your name and email to confirm it.</p>
+          </div>
+          <form id="booking-form" class="stack" novalidate hidden>
+            <div>
+              <p class="overline">Your booking</p>
+              <p class="selected-time" id="selected-time"></p>
+              <p class="muted" id="selected-provider"></p>
+            </div>
+            <div class="alert" id="form-alert" role="alert" hidden></div>
+            <div class="field">
+              <label for="name">Full name</label>
+              <input id="name" name="name" class="input" autocomplete="name" required>
+              <p class="field-error" id="name-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" class="input" type="email" autocomplete="email" inputmode="email" required>
+              <p class="field-error" id="email-error" hidden></p>
+            </div>
+            <p class="field-error" id="slot_id-error" hidden></p>
+            <button type="submit" class="btn btn-primary" id="book-btn">Confirm booking</button>
+            <button type="button" class="btn btn-ghost" id="clear-selection">Choose another time</button>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <!-- D6: confirmation -->
+    <section class="view view-confirm" id="view-confirm" hidden aria-labelledby="confirm-title">
+      <div class="panel confirm-panel">
+        <span class="badge" id="confirm-badge"></span>
+        <h1 class="display" id="confirm-title">You're <em>booked</em></h1>
+        <p class="lede" id="confirm-when"></p>
+        <dl class="details">
+          <div><dt>Booking ID</dt><dd class="mono" id="c-id"></dd></div>
+          <div><dt>Provider</dt><dd id="c-provider"></dd></div>
+          <div><dt>Time</dt><dd id="c-time"></dd></div>
+          <div><dt>Name</dt><dd id="c-name"></dd></div>
+          <div><dt>Email</dt><dd id="c-email"></dd></div>
+          <div><dt>Status</dt><dd id="c-status"></dd></div>
+        </dl>
+        <div class="field">
+          <label for="share-link">Link to this booking</label>
+          <div class="copy-row">
+            <input id="share-link" class="input mono" readonly>
+            <button type="button" class="btn btn-outline" id="copy-link">Copy</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="book-another">Book another time</button>
+      </div>
+    </section>
+
+    <section class="view" id="view-lookup-error" hidden>
+      <div class="panel confirm-panel">
+        <h1 class="display">Booking <em>not found</em></h1>
+        <p class="lede">There's no booking with that ID. Check the link, or book a new time.</p>
+        <button type="button" class="btn btn-primary" id="lookup-back">See open slots</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- D4: 409 dialog -->
+  <dialog class="dialog" id="taken-dialog" aria-labelledby="taken-title">
+    <h2 class="h3" id="taken-title">Someone just booked this slot</h2>
+    <p class="muted" id="taken-body">Your name and email are still filled in. These times are close by:</p>
+    <div class="nearby" id="nearby"></div>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" id="taken-close">See all times</button>
+    </div>
+  </dialog>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
