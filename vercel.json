@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/reset", "destination": "/api" },
-    { "source": "/slots", "destination": "/api" },
-    { "source": "/bookings", "destination": "/api" },
-    { "source": "/bookings/:path*", "destination": "/api" }
-  ]
-}

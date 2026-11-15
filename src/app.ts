@@ -18,6 +18,7 @@ app.set('etag', false);
 app.use(cors);
 
 // The web page's files are not API endpoints, so they are served before the key check.
+// Locally Express serves them; on Vercel, public/ is served by the CDN and this line is ignored.
 app.use(express.static(publicDir));
 
 // Everything below needs the API key, including unknown routes.

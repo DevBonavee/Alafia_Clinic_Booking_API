@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "migrate": "tsx scripts/migrate.ts",
+    "migrate:prod": "tsx --env-file=.env.local scripts/migrate.ts",
     "smoke": "tsx scripts/smoke.ts",
+    "smoke:prod": "tsx --env-file=.env.local scripts/smoke.ts --yes",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "typecheck": "tsc --noEmit",
