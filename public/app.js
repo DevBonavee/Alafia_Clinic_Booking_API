@@ -617,6 +617,14 @@
       $(`${f}-error`).hidden = true;
     });
   }
+  // The limit is per email, so a different email does not have to wait out the countdown.
+  $('email').addEventListener('input', () => {
+    if (state.retryTimer === null) return;
+    clearInterval(state.retryTimer);
+    state.retryTimer = null;
+    hideAlert($('form-alert'));
+    setSubmitting(false);
+  });
   $('taken-close').addEventListener('click', () => { $('taken-dialog').close(); clearSelection(); });
   // However the dialog closes (button, Esc), never leave the form pointing at a taken slot.
   $('taken-dialog').addEventListener('close', () => {

@@ -6,6 +6,7 @@ import { bookingJson, type BookingRow } from '../format.js';
 import { asyncHandler, HttpError } from '../http.js';
 import { claimKey, readIdempotencyKey, requestHash, storeResponse, type StoredResponse } from '../idempotency.js';
 import { decodeCursor, encodeCursor, parseLimit } from '../pagination.js';
+import { checkRateLimit, rateLimitEmail } from '../rateLimit.js';
 import { parseNewBooking } from '../validate.js';
 
 const BOOKING_COLUMNS = 'id, slot_id, name, email, status, created_at';
@@ -23,7 +24,7 @@ function inBookingOrder(body: unknown): unknown {
 }
 
 /**
- * The booking itself: validate fields (400), slot exists (404), slot not started (400),
+ * The booking itself (after the rate limit): validate fields (400), slot exists (404), slot not started (400),
  * insert (201) or slot taken (409). Business errors come back as a response, not a throw,
  * so the surrounding transaction can store them on the idempotency key and still commit.
  *
@@ -61,29 +62,48 @@ export const bookingsRouter = Router();
 
 /**
  * POST /bookings. Order: (auth and JSON parsing happen in middleware) BEGIN, idempotency
- * replay or 422, booking, store the response on the key, COMMIT.
+ * replay or 422, rate limit (429), booking, store the response on the key, COMMIT.
+ *
+ * A replay or a 422 never counts as an attempt. A 429 is never stored on the key: the key
+ * row is removed so a retry after the wait runs fresh.
  */
 bookingsRouter.post(
   '/bookings',
   asyncHandler(async (req, res) => {
     const key = readIdempotencyKey(req.get('Idempotency-Key'));
 
-    const response = await withTransaction(async (client): Promise<StoredResponse> => {
-      if (key !== null) {
-        const claim = await claimKey(client, key, requestHash(req.body));
-        if (claim.kind === 'mismatch') {
-          return { status: 422, body: { error: 'idempotency key reused with a different body' } };
+    const response = await withTransaction(
+      async (client): Promise<StoredResponse & { retryAfter?: number }> => {
+        if (key !== null) {
+          const claim = await claimKey(client, key, requestHash(req.body));
+          if (claim.kind === 'mismatch') {
+            return { status: 422, body: { error: 'idempotency key reused with a different body' } };
+          }
+          if (claim.kind === 'replay') {
+            return { status: claim.response.status, body: inBookingOrder(claim.response.body) };
+          }
         }
-        if (claim.kind === 'replay') {
-          return { status: claim.response.status, body: inBookingOrder(claim.response.body) };
+
+        const email = rateLimitEmail(req.body);
+        if (email !== null) {
+          const limit = await checkRateLimit(client, email);
+          if (!limit.allowed) {
+            if (key !== null) await client.query('DELETE FROM idempotency_keys WHERE key = $1', [key]);
+            return {
+              status: 429,
+              body: { error: 'too many booking attempts, try again later' },
+              retryAfter: limit.retryAfterSeconds,
+            };
+          }
         }
-      }
 
-      const result = await createBooking(client, req.body);
-      if (key !== null) await storeResponse(client, key, result);
-      return result;
-    });
+        const result = await createBooking(client, req.body);
+        if (key !== null) await storeResponse(client, key, result);
+        return result;
+      },
+    );
 
+    if (response.retryAfter !== undefined) res.set('Retry-After', String(response.retryAfter));
     res.status(response.status).json(response.body);
   }),
 );

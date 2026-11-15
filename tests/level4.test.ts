@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/app.js';
 import { closePool, getPool } from '../src/db.js';
@@ -153,6 +153,14 @@ describe('GET /bookings', () => {
     start: inMinutes(60 + i * 30),
     end: inMinutes(90 + i * 30),
   }));
+
+  // The fixture books 12 times for one email in under a minute; lift the Level 5 limit for this suite.
+  beforeAll(() => {
+    process.env.RATE_LIMIT_MAX = '1000';
+  });
+  afterAll(() => {
+    delete process.env.RATE_LIMIT_MAX;
+  });
 
   beforeEach(async () => {
     await reset(slots);
