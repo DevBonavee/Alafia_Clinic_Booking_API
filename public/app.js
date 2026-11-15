@@ -11,6 +11,7 @@
     selectedId: null,
     submitting: false,
     retryTimer: null,
+    confirmed: null, // { booking, slot } shown on the confirmation view
   };
 
   // ---------- storage (never throws) ----------
@@ -379,7 +380,38 @@
     url.hash = '';
     $('share-link').value = url.toString();
     $('copy-link').textContent = 'Copy';
+    state.confirmed = { booking, slot };
+    hideAlert($('confirm-alert'));
+    $('cancel-ask').hidden = true;
+    $('cancel-booking').hidden = status !== 'confirmed';
     show('view-confirm');
+  }
+
+  async function cancelBooking() {
+    const { booking, slot } = state.confirmed;
+    const yes = $('cancel-yes');
+    yes.disabled = true;
+    yes.textContent = 'Cancelling…';
+    try {
+      const cancelled = await api('DELETE', `/bookings/${encodeURIComponent(booking.id)}`);
+      showConfirmation(cancelled, slot);
+      showAlert($('confirm-alert'), 'success', 'Booking cancelled. The time is open again.');
+    } catch (err) {
+      if (err.status === 401) return;
+      if (err.status === 409) {
+        showConfirmation({ ...booking, status: 'cancelled' }, slot);
+        showAlert($('confirm-alert'), 'info', 'This booking was already cancelled.');
+      } else if (err.status === 404) {
+        show('view-lookup-error');
+      } else {
+        $('cancel-ask').hidden = true;
+        $('cancel-booking').hidden = false;
+        showAlert($('confirm-alert'), 'error', "We couldn't cancel the booking. Please try again.");
+      }
+    } finally {
+      yes.disabled = false;
+      yes.textContent = 'Yes, cancel';
+    }
   }
 
   async function openBookingFromUrl(id) {
@@ -448,7 +480,23 @@
     });
   }
   $('taken-close').addEventListener('click', () => { $('taken-dialog').close(); clearSelection(); });
+  // However the dialog closes (button, Esc), never leave the form pointing at a taken slot.
+  $('taken-dialog').addEventListener('close', () => {
+    const selected = state.slots.find((s) => s.id === state.selectedId);
+    if (state.selectedId && (!selected || !selected.available)) clearSelection();
+  });
   $('book-another').addEventListener('click', goToSlots);
+  $('cancel-booking').addEventListener('click', () => {
+    hideAlert($('confirm-alert'));
+    $('cancel-booking').hidden = true;
+    $('cancel-ask').hidden = false;
+    $('cancel-keep').focus();
+  });
+  $('cancel-keep').addEventListener('click', () => {
+    $('cancel-ask').hidden = true;
+    $('cancel-booking').hidden = false;
+  });
+  $('cancel-yes').addEventListener('click', cancelBooking);
   $('lookup-back').addEventListener('click', goToSlots);
   $('copy-link').addEventListener('click', async () => {
     try {

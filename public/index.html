@@ -115,7 +115,18 @@
             <button type="button" class="btn btn-outline" id="copy-link">Copy</button>
           </div>
         </div>
-        <button type="button" class="btn btn-secondary" id="book-another">Book another time</button>
+        <div class="alert" id="confirm-alert" role="alert" hidden></div>
+        <div class="confirm-actions">
+          <button type="button" class="btn btn-secondary" id="book-another">Book another time</button>
+          <button type="button" class="btn btn-ghost btn-danger" id="cancel-booking">Cancel booking</button>
+        </div>
+        <div class="cancel-ask" id="cancel-ask" hidden>
+          <p>Cancel this booking? The time goes back on the list for others.</p>
+          <div class="cancel-ask-actions">
+            <button type="button" class="btn btn-outline" id="cancel-keep">Keep</button>
+            <button type="button" class="btn btn-destructive" id="cancel-yes">Yes, cancel</button>
+          </div>
+        </div>
       </div>
     </section>
 
