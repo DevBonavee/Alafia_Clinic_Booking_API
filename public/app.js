@@ -681,7 +681,6 @@
     e.preventDefault();
     const value = $('api-key').value.trim();
     if (!value) {
-      $('api-key-wrap').classList.add('err');
       $('api-key-error').hidden = false;
       return;
     }
@@ -690,7 +689,11 @@
     store.set(KEY_STORAGE, value);
     route();
   });
-  $('api-key').addEventListener('input', () => { $('api-key-wrap').classList.remove('err'); $('api-key-error').hidden = true; });
+  $('api-key').addEventListener('input', () => {
+    $('api-key-wrap').classList.remove('err');
+    $('key-error').hidden = true;
+    $('api-key-error').hidden = true;
+  });
 
   const changeKey = () => { apiKey = ''; store.set(KEY_STORAGE, ''); showKeyView(false); };
   $('change-key').addEventListener('click', changeKey);

@@ -58,7 +58,7 @@
           </div>
           <div class="alert a-red" id="key-error" role="alert" hidden>
             <span data-icon="alert"></span>
-            <div><div class="t">That key wasn’t accepted</div><div class="d">The server replied 401<span class="desk-only"> (invalid or missing API key)</span>. Check the key and try again.</div></div>
+            <div><div class="t">API key not accepted</div><div class="d">Check that you copied the whole key and try again. If it still doesn’t work, ask the clinic front desk for a new key.</div></div>
           </div>
           <form id="key-form" class="stack key-form" novalidate>
             <div class="field">
@@ -68,7 +68,7 @@
                 <span class="err-ic" data-icon="alert" data-size="18"></span>
               </div>
               <span class="msg err" id="api-key-error" hidden>Paste your API key first.</span>
-              <span class="msg">Saved in this browser only<span class="desk-only"> (localStorage). Never put in the page code</span>.</span>
+              <span class="msg">Your key is saved on this device only, so you won’t need to enter it again.</span>
             </div>
             <button type="submit" class="btn primary block">Save key and continue <span data-icon="arrow"></span></button>
           </form>
