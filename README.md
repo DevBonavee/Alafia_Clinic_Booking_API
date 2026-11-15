@@ -4,6 +4,8 @@ A booking API for a small clinic, plus the web page that uses it. Patients see o
 
 It is the Koya assessment, Task 1. The contract follows the official spec at https://koyaacademy.com/assessment-api.
 
+Live: https://alafiaclinicbookingapi-teal.vercel.app. The API endpoints sit at the root (for example `/slots`) and the web page is at `/`.
+
 Stack: Node.js 22, TypeScript, Express, PostgreSQL (Neon in production), hosted on Vercel. The page is plain HTML, CSS and JavaScript with no build step.
 
 ## Endpoints
