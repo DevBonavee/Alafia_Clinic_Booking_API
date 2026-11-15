@@ -18,6 +18,10 @@
         <img src="/logo.svg" width="40" height="40" alt="">
         <span class="wordmark"><span class="wordmark-name">alafia</span><span class="wordmark-sub">CLINIC</span></span>
       </a>
+      <nav class="nav" id="nav" aria-label="Main" hidden>
+        <a href="/" class="nav-link" data-nav="book">Book</a>
+        <a href="/?view=mine" class="nav-link" data-nav="mine">My bookings</a>
+      </nav>
       <div class="key-chip" id="key-chip" hidden>
         <span class="dot" aria-hidden="true"></span>
         <span class="mono"><span class="key-label">Key </span>····<span id="key-last4"></span></span>
@@ -128,6 +132,27 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- D7: my bookings -->
+    <section class="view view-mine" id="view-mine" hidden aria-labelledby="mine-title">
+      <div class="page-head">
+        <p class="overline">My bookings</p>
+        <h1 class="display" id="mine-title">Your <em>bookings</em></h1>
+        <p class="lede">Enter the email you booked with. Oldest bookings come first.</p>
+      </div>
+      <form id="mine-form" class="mine-form" novalidate>
+        <div class="field">
+          <label for="mine-email">Email</label>
+          <input id="mine-email" class="input" type="email" autocomplete="email" inputmode="email" required>
+          <p class="field-error" id="mine-email-error" hidden></p>
+        </div>
+        <button type="submit" class="btn btn-primary" id="mine-submit">Show bookings</button>
+      </form>
+      <div class="alert" id="mine-alert" role="alert" hidden></div>
+      <div class="mine-list" id="mine-list" aria-live="polite"></div>
+      <p class="empty" id="mine-empty" hidden>No bookings for that email.</p>
+      <button type="button" class="btn btn-outline mine-more" id="mine-more" hidden>Load more</button>
     </section>
 
     <section class="view" id="view-lookup-error" hidden>

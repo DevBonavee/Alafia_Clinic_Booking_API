@@ -83,15 +83,29 @@
   }
 
   // ---------- views ----------
-  const views = ['view-key', 'view-slots', 'view-confirm', 'view-lookup-error'];
+  const views = ['view-key', 'view-slots', 'view-confirm', 'view-mine', 'view-lookup-error'];
   function show(id) {
     for (const v of views) $(v).hidden = v !== id;
+    const current = id === 'view-mine' ? 'mine' : id === 'view-slots' ? 'book' : null;
+    for (const a of document.querySelectorAll('[data-nav]')) {
+      if (a.dataset.nav === current) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
     window.scrollTo(0, 0);
   }
 
   function updateKeyChip() {
     $('key-chip').hidden = !memoryKey;
+    $('nav').hidden = !memoryKey;
     $('key-last4').textContent = memoryKey.slice(-4);
+  }
+
+  const EMAIL_STORAGE = 'alafia.email';
+  function rememberEmail(email) {
+    try { localStorage.setItem(EMAIL_STORAGE, email); } catch { /* optional convenience */ }
+  }
+  function lastEmail() {
+    try { return localStorage.getItem(EMAIL_STORAGE) || ''; } catch { return ''; }
   }
 
   function showKeyView(message) {
@@ -271,6 +285,7 @@
     setSubmitting(true);
     try {
       const booking = await postBooking(body);
+      rememberEmail(booking.email);
       const slot = state.slots.find((s) => s.id === booking.slot_id);
       $('booking-form').reset();
       state.selectedId = null;
@@ -434,6 +449,124 @@
     loadSlots();
   }
 
+  // ---------- my bookings ----------
+  const mine = { email: '', cursor: null, slotsById: new Map(), loading: false };
+
+  function showMine() {
+    show('view-mine');
+    if (!$('mine-email').value) $('mine-email').value = lastEmail();
+    if ($('mine-email').value) loadMine(true);
+    else $('mine-email').focus();
+  }
+
+  async function loadMine(fresh) {
+    if (mine.loading) return;
+    hideAlert($('mine-alert'));
+    $('mine-email-error').hidden = true;
+    $('mine-email').removeAttribute('aria-invalid');
+    if (fresh) {
+      const email = $('mine-email').value.trim();
+      if (!email) {
+        $('mine-email-error').textContent = 'email is required';
+        $('mine-email-error').hidden = false;
+        $('mine-email').setAttribute('aria-invalid', 'true');
+        $('mine-email').focus();
+        return;
+      }
+      mine.email = email;
+      mine.cursor = null;
+      $('mine-list').replaceChildren();
+      $('mine-empty').hidden = true;
+    }
+    mine.loading = true;
+    const btn = fresh ? $('mine-submit') : $('mine-more');
+    btn.disabled = true;
+    try {
+      const params = new URLSearchParams({ email: mine.email, limit: '10' });
+      if (mine.cursor) params.set('cursor', mine.cursor);
+      const [page] = await Promise.all([
+        api('GET', `/bookings?${params}`),
+        mine.slotsById.size ? null : api('GET', '/slots').then((d) => {
+          mine.slotsById = new Map(d.slots.map((s) => [s.id, s]));
+        }).catch(() => {}),
+      ]);
+      $('mine-list').append(...page.bookings.map(bookingRow));
+      mine.cursor = page.next_cursor;
+      $('mine-more').hidden = !page.next_cursor;
+      $('mine-empty').hidden = $('mine-list').children.length > 0;
+      if (fresh) rememberEmail(mine.email);
+    } catch (err) {
+      if (err.status === 401) return;
+      if (err.status === 400) showAlert($('mine-alert'), 'error', err.message);
+      else showAlert($('mine-alert'), 'error', "We couldn't load your bookings. Please try again.");
+    } finally {
+      mine.loading = false;
+      btn.disabled = false;
+    }
+  }
+
+  function bookingRow(booking) {
+    const slot = mine.slotsById.get(booking.slot_id);
+    const statusBadge = () => el('span', {
+      class: `badge badge-${booking.status}`,
+      text: booking.status === 'confirmed' ? 'Confirmed' : 'Cancelled',
+    });
+    const badgeSlot = el('span', {}, statusBadge());
+    const view = el('a', { class: 'btn btn-ghost btn-sm', href: `/?booking=${encodeURIComponent(booking.id)}`, text: 'View' });
+    const cancel = el('button', { type: 'button', class: 'btn btn-outline btn-sm btn-danger', text: 'Cancel' });
+    const keep = el('button', { type: 'button', class: 'btn btn-outline', text: 'Keep' });
+    const yes = el('button', { type: 'button', class: 'btn btn-destructive', text: 'Yes, cancel' });
+    const ask = el('div', { class: 'cancel-ask', hidden: true },
+      el('p', { text: 'Cancel this booking?' }),
+      el('div', { class: 'cancel-ask-actions' }, keep, yes));
+    const note = el('p', { class: 'field-error', hidden: true });
+
+    cancel.hidden = booking.status !== 'confirmed';
+    cancel.addEventListener('click', () => { ask.hidden = false; cancel.hidden = true; keep.focus(); });
+    keep.addEventListener('click', () => { ask.hidden = true; cancel.hidden = false; });
+    yes.addEventListener('click', async () => {
+      yes.disabled = true;
+      yes.textContent = 'Cancelling…';
+      note.hidden = true;
+      try {
+        booking = await api('DELETE', `/bookings/${encodeURIComponent(booking.id)}`);
+      } catch (err) {
+        if (err.status === 401) return;
+        if (err.status === 409) booking = { ...booking, status: 'cancelled' };
+        else {
+          note.textContent = "We couldn't cancel this booking. Please try again.";
+          note.hidden = false;
+          cancel.hidden = false;
+        }
+      } finally {
+        yes.disabled = false;
+        yes.textContent = 'Yes, cancel';
+        ask.hidden = true;
+      }
+      badgeSlot.replaceChildren(statusBadge());
+      cancel.hidden = booking.status !== 'confirmed';
+      const s = mine.slotsById.get(booking.slot_id);
+      if (s && booking.status === 'cancelled') s.available = true;
+    });
+    view.addEventListener('click', (e) => {
+      e.preventDefault();
+      history.pushState({}, '', view.getAttribute('href'));
+      route();
+    });
+
+    const when = slot ? fmtFull.format(new Date(slot.start)) : `Slot ${booking.slot_id}`;
+    const sub = slot ? `${slot.provider} · ${slotRange(slot)}` : 'This slot is no longer listed';
+    return el('article', { class: 'booking-row' },
+      el('div', {},
+        el('p', { class: 'booking-when', text: when }),
+        el('p', { class: 'booking-sub', text: sub }),
+        el('p', { class: 'booking-id', text: booking.id })),
+      el('div', {}, badgeSlot),
+      el('div', { class: 'booking-actions' }, view, cancel),
+      ask,
+      note);
+  }
+
   // ---------- routing ----------
   function route() {
     updateKeyChip();
@@ -441,7 +574,12 @@
       showKeyView('');
       return;
     }
-    const id = new URLSearchParams(location.search).get('booking');
+    const params = new URLSearchParams(location.search);
+    if (params.get('view') === 'mine') {
+      showMine();
+      return;
+    }
+    const id = params.get('booking');
     if (id) {
       openBookingFromUrl(id);
     } else {
@@ -506,6 +644,15 @@
       $('share-link').select();
     }
   });
+  $('mine-form').addEventListener('submit', (e) => { e.preventDefault(); loadMine(true); });
+  $('mine-more').addEventListener('click', () => loadMine(false));
+  for (const a of document.querySelectorAll('[data-nav]')) {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      history.pushState({}, '', a.getAttribute('href'));
+      route();
+    });
+  }
   window.addEventListener('popstate', route);
 
   route();

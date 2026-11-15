@@ -1,52 +1,113 @@
 import { randomBytes } from 'node:crypto';
 import { Router } from 'express';
-import { getPool } from '../db.js';
+import type { PoolClient } from 'pg';
+import { getPool, withTransaction } from '../db.js';
 import { bookingJson, type BookingRow } from '../format.js';
 import { asyncHandler, HttpError } from '../http.js';
+import { claimKey, readIdempotencyKey, requestHash, storeResponse, type StoredResponse } from '../idempotency.js';
+import { decodeCursor, encodeCursor, parseLimit } from '../pagination.js';
 import { parseNewBooking } from '../validate.js';
 
 const BOOKING_COLUMNS = 'id, slot_id, name, email, status, created_at';
+const BOOKING_KEY_ORDER = ['id', 'slot_id', 'name', 'email', 'status', 'created_at'] as const;
 
 function newBookingId(): string {
   return 'bk_' + randomBytes(12).toString('hex');
 }
 
-export const bookingsRouter = Router();
+/** jsonb does not keep key order; put a replayed booking's fields back in the usual order. */
+function inBookingOrder(body: unknown): unknown {
+  if (typeof body !== 'object' || body === null || !('slot_id' in body)) return body;
+  const b = body as Record<string, unknown>;
+  return Object.fromEntries(BOOKING_KEY_ORDER.map((k) => [k, b[k]]));
+}
 
 /**
- * Books a slot: validate fields (400), slot exists (404), slot not started (400), insert (201 or 409).
+ * The booking itself: validate fields (400), slot exists (404), slot not started (400),
+ * insert (201) or slot taken (409). Business errors come back as a response, not a throw,
+ * so the surrounding transaction can store them on the idempotency key and still commit.
  *
- * Double booking is prevented by the partial unique index one_confirmed_booking_per_slot, not by
- * reading first. ON CONFLICT DO NOTHING turns a clash into "no row returned" (409) without
- * raising an error, so it stays safe inside a transaction later (Level 4).
+ * Double booking is prevented by the partial unique index one_confirmed_booking_per_slot.
+ * ON CONFLICT DO NOTHING turns a clash into "no row returned" without aborting the transaction.
  */
-bookingsRouter.post(
-  '/bookings',
-  asyncHandler(async (req, res) => {
-    const { slot_id, name, email } = parseNewBooking(req.body);
+async function createBooking(client: PoolClient, rawBody: unknown): Promise<StoredResponse> {
+  try {
+    const { slot_id, name, email } = parseNewBooking(rawBody);
 
-    const slot = await getPool().query<{ started: boolean }>(
-      'SELECT start_at <= now() AS started FROM slots WHERE id = $1',
+    // FOR SHARE keeps a concurrent /reset from deleting the slot before this transaction commits.
+    const slot = await client.query<{ started: boolean }>(
+      'SELECT start_at <= now() AS started FROM slots WHERE id = $1 FOR SHARE',
       [slot_id],
     );
     if (slot.rows.length === 0) throw new HttpError(404, 'slot not found');
     if (slot.rows[0].started) throw new HttpError(400, 'slot has already started');
 
-    try {
-      const { rows } = await getPool().query<BookingRow>(
-        `INSERT INTO bookings (id, slot_id, name, email, status)
-         VALUES ($1, $2, $3, $4, 'confirmed')
-         ON CONFLICT (slot_id) WHERE status = 'confirmed' DO NOTHING
-         RETURNING ${BOOKING_COLUMNS}`,
-        [newBookingId(), slot_id, name, email],
-      );
-      if (rows.length === 0) throw new HttpError(409, 'slot already booked');
-      res.status(201).json(bookingJson(rows[0]));
-    } catch (err) {
-      // The slot vanished between the check and the insert (a concurrent /reset).
-      if ((err as { code?: string }).code === '23503') throw new HttpError(404, 'slot not found');
-      throw err;
-    }
+    const { rows } = await client.query<BookingRow>(
+      `INSERT INTO bookings (id, slot_id, name, email, status)
+       VALUES ($1, $2, $3, $4, 'confirmed')
+       ON CONFLICT (slot_id) WHERE status = 'confirmed' DO NOTHING
+       RETURNING ${BOOKING_COLUMNS}`,
+      [newBookingId(), slot_id, name, email],
+    );
+    if (rows.length === 0) throw new HttpError(409, 'slot already booked');
+    return { status: 201, body: bookingJson(rows[0]) };
+  } catch (err) {
+    if (err instanceof HttpError) return { status: err.status, body: { error: err.message } };
+    throw err;
+  }
+}
+
+export const bookingsRouter = Router();
+
+/**
+ * POST /bookings. Order: (auth and JSON parsing happen in middleware) BEGIN, idempotency
+ * replay or 422, booking, store the response on the key, COMMIT.
+ */
+bookingsRouter.post(
+  '/bookings',
+  asyncHandler(async (req, res) => {
+    const key = readIdempotencyKey(req.get('Idempotency-Key'));
+
+    const response = await withTransaction(async (client): Promise<StoredResponse> => {
+      if (key !== null) {
+        const claim = await claimKey(client, key, requestHash(req.body));
+        if (claim.kind === 'mismatch') {
+          return { status: 422, body: { error: 'idempotency key reused with a different body' } };
+        }
+        if (claim.kind === 'replay') {
+          return { status: claim.response.status, body: inBookingOrder(claim.response.body) };
+        }
+      }
+
+      const result = await createBooking(client, req.body);
+      if (key !== null) await storeResponse(client, key, result);
+      return result;
+    });
+
+    res.status(response.status).json(response.body);
+  }),
+);
+
+/** GET /bookings?email=&limit=&cursor= : one person's bookings, oldest first, cursor-paginated. */
+bookingsRouter.get(
+  '/bookings',
+  asyncHandler(async (req, res) => {
+    const rawEmail = req.query.email;
+    if (typeof rawEmail !== 'string' || rawEmail.trim() === '') throw new HttpError(400, 'email is required');
+    const email = rawEmail.trim().toLowerCase();
+    const limit = parseLimit(req.query.limit);
+    const afterSeq = decodeCursor(req.query.cursor);
+
+    const { rows } = await getPool().query<BookingRow & { seq: string }>(
+      `SELECT seq, ${BOOKING_COLUMNS} FROM bookings
+        WHERE email = $1 AND seq > $2
+        ORDER BY seq ASC
+        LIMIT $3`,
+      [email, afterSeq, limit + 1],
+    );
+    const page = rows.slice(0, limit);
+    const next_cursor = rows.length > limit ? encodeCursor(Number(page[page.length - 1].seq)) : null;
+    res.status(200).json({ bookings: page.map(bookingJson), next_cursor });
   }),
 );
 
