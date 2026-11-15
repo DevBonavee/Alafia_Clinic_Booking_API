@@ -1,6 +1,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import { requireApiKey } from './auth.js';
+import { cors } from './cors.js';
 import { HttpError } from './http.js';
 import { bookingsRouter } from './routes/bookings.js';
 import { resetRouter } from './routes/reset.js';
@@ -13,10 +15,16 @@ export const app = express();
 app.disable('x-powered-by');
 app.set('etag', false);
 
-// The web page's files are not API endpoints, so they are served before any API middleware.
+app.use(cors);
+
+// The web page's files are not API endpoints, so they are served before the key check.
 app.use(express.static(publicDir));
 
-app.use(express.json({ limit: '100kb' }));
+// Everything below needs the API key, including unknown routes.
+app.use(requireApiKey);
+
+// The API only speaks JSON, so bodies are parsed as JSON even if the client forgot the Content-Type header.
+app.use(express.json({ limit: '100kb', type: () => true }));
 
 app.use(resetRouter);
 app.use(slotsRouter);

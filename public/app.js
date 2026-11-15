@@ -49,6 +49,8 @@
     try { data = await res.json(); } catch { /* empty or non-JSON body */ }
     if (!res.ok) {
       if (res.status === 401) {
+        writeKey('');
+        updateKeyChip();
         showKeyView("That key wasn't accepted. Check it and try again.");
       }
       throw new ApiError(res.status, (data && data.error) || `Request failed (${res.status})`, res.headers);
